@@ -11,15 +11,43 @@
   margin-left: 0px;
 }
 .cell {
-  border: 1px solid blue;
+  border: 1px solid black;
+  background-color: #eeeeee;
   width: 50px;
   height: 50px;
   float: left;
 }
-.closed {
+.click-bomb {
   background-image: url("../images/bomb.png");
   background-size: 25px 25px;
   background-repeat: no-repeat;
   background-position-x: 12px;
   background-position-y: 12px;
+}
+.click-empty {
+  background-color: #eeeeee;
+}
+.click-1 {
+  color :blue;
+}
+.click-2 {
+  color :green;
+}
+.click-3 {
+  color :red;
+}
+.click-4 {
+  color :black;
+}
+.click-5 {
+  color :orange;
+}
+.click-6 {
+  color :yellow;
+}
+.click-7 {
+  color: black;
+}
+.click-8 {
+  color: black;
 }

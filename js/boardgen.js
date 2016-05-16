@@ -6,7 +6,11 @@ $(document).ready(function() {
     this.rno = rowno;
     this.colno = colno;
     this.bomb = 0;
-    this.neighbourCount =0;
+    this.neighbourCount = 0;
+    //-1 Closed, 0 empty  
+    this.leftclickstate = -1;
+    //0 no flag, 1 flag
+    this.rightclickstate = 0;
   }
   var Mine = function (rowsize, colsize) {
     this.row = rowsize;
@@ -93,7 +97,27 @@ $(document).ready(function() {
   //board.displayBomb(Minewidth,Mineheight);
   //field.initializeBoard();
   
-  
+  //------------------------------------------------------------------------------------------------------
+  Mine.prototype.leftClickUpdate= function(r,c){
+       
+  };
+  $(".closed").mousedown(function(e) {
+    if(e.which == 1) {
+      //alert("1");
+      var leftclickx = $(this).data("row");
+      var leftclicky = $(this).data("col");
+      board.leftClickUpdate(leftclickx,leftclicky);
+    }
+    
+    else if(e.which == 3) {
+      //alert("3");
+      var rightclickx = $(this).data("row");
+      var rightclicky = $(this).data("col"); 
+      alert(rightclickx);
+      alert(rightclicky);
+      board.RighCtlickUpdate(leftclickx,leftclicky);
+    }
+  });
   
 
 
