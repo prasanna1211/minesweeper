@@ -16,6 +16,9 @@
   width: 50px;
   height: 50px;
   float: left;
+  text-align: center;
+  font-size: 25px;
+  font-weight: 10px;
 }
 .click-bomb {
   background-image: url("../images/bomb.png");
@@ -24,8 +27,8 @@
   background-position-x: 12px;
   background-position-y: 12px;
 }
-.click-empty {
-  background-color: #eeeeee;
+.click-0 {
+  color: green;
 }
 .click-1 {
   color :blue;

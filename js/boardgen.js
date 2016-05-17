@@ -7,16 +7,17 @@ $(document).ready(function() {
     this.colno = colno;
     this.bomb = 0;
     this.neighbourCount = 0;
-    //-1 Closed, 0 empty  
-    this.leftclickstate = -1;
+    // 0 Closed, 1 empty  
+    this.leftclickstate = 0;
     //0 no flag, 1 flag
     this.rightclickstate = 0;
   }
   var Mine = function (rowsize, colsize) {
     this.row = rowsize;
     this.col = colsize;
+    this.gameover=0;
     this.initializeMine();
-    //this.displayField();                                                         
+    //this.displayField();                                                       
   }
 
   //----------------------------------------------------------------------------------
@@ -63,16 +64,20 @@ $(document).ready(function() {
 
       
     }
-    console.log($(".field").html());
+    //console.log($(".field").html());
 
     //$(".field").append('<div class = "cell closed" data-row='+0+' data-col='+0+'\n');   
     //console.log($(".field").html());
   }; 
   
   Mine.prototype.plantBomb = function(bomb,r,c){
-    for(var i=0; i<bomb;i++) {
+    for(var i=1; i<=bomb;i++) {
       var randomr = Math.floor(Math.random()*r);
       var randomc = Math.floor(Math.random()*c);
+      if(this.Mine[randomr][randomc!=0]) {
+        bomb++;
+        continue;
+      }
       this.Mine[randomr][randomc].bomb = 1;
     }     
   };
@@ -94,19 +99,94 @@ $(document).ready(function() {
   board.countNeighbour(Minewidth,Mineheight);
   //board.displayMine(Minewidth,Mineheight);
   //board.displayField(Minewidth,Mineheight);
-  //board.displayBomb(Minewidth,Mineheight);
+  board.displayBomb(Minewidth,Mineheight);
   //field.initializeBoard();
   
   //------------------------------------------------------------------------------------------------------
-  Mine.prototype.leftClickUpdate= function(r,c){
-       
+  Mine.prototype.gameOver= function(r,c,rsize,csize){
+    this.gameover = 1;
+    for(var i=0;i<rsize;i++) {
+      for(var j=0;j<csize;j++) {
+        if(this.Mine[i][j].bomb) {
+          this.Mine[i][j].leftclickstate = 1;
+        }
+      }
+    }
   };
-  $(".closed").mousedown(function(e) {
+  Mine.prototype.exposeCells= function(r,c,rsize,csize){
+    if(this.Mine[r][c].neighbourCount>0) {
+      this.Mine[r][c].leftclickstate=1;
+      return;
+    }
+    this.Mine[r][c].leftclickstate=1;
+    for(var i=0; i<8;i++) {
+      x=r+dx[i];
+      y=c+dy[i];  
+      //console.log("outside"+x+" "+y+" "+rsize+" "+csize); 
+      if(x>=0 && x<rsize && y>=0 && y<csize)  {
+        //console.log("came");
+        //console.log("inside "+x+" "+y);  
+        //console.log(this.Mine[x][y].bomb);
+        //console.log(this.Mine[x][y].leftclickstate);
+        //console.log(this.Mine[x][y].rightclickstate);
+        if(this.Mine[x][y].bomb == 0 && this.Mine[x][y].leftclickstate==0 && this.Mine[x][y].rightclickstate==0) {
+          this.exposeCells(x,y,rsize,csize);
+        }
+      }  
+    } 
+    return;
+  };  
+  Mine.prototype.leftClickUpdate= function(r,c,rsize,csize){
+      //display all bombds and disable touching
+      //if not bomb open it, expose all fields, change state, change html accordingly   
+      if(this.Mine[r][c].bomb) {
+        alert("Game Over. You have stepped on bomb");
+        this.gameOver(r,c,rsize,csize);
+      } 
+      else {
+        this.exposeCells(r,c,rsize,csize);
+      }
+      
+    
+  };
+  Mine.prototype.changeBoard= function(r,c){
+      //display all bombds and disable touching
+      //if not bomb open it, expose all fields, change state, change html accordingly   
+
+    $(".field").empty();
+    for(var i=0; i<r; i++) {
+      var html = '<div class = "row">'+'\n';
+      for(var j=0; j<c; j++) {
+        html += '<div class = "cell ';
+        //console.log("debug "+this.Mine[i][j].neighbourCount);
+        if(this.Mine[i][j].leftclickstate==1)  html += 'click-'+this.Mine[i][j].neighbourCount+'" ';
+        else html +='closed" '
+        html += 'data-row="'+i+'" data-col="'+j+'">';
+        html += '</div>';
+        html += '\n';
+
+      }
+      //console.log(html1);
+      $(".field").append('</div'+html);
+    }
+    console.log($(".field").html());
+    //$(".field").append('<div class = "cell closed" data-row='+0+' data-col='+0+'\n');   
+    //console.log($(".field").html()); 
+    for(var i=0; i<9; i++) {
+      var selector = ".click-"+i;
+      $(selector).append(i);
+    }
+  };
+   
+  $(".closed").on("click",function(e) {
+    //alert("clicked");  
     if(e.which == 1) {
       //alert("1");
       var leftclickx = $(this).data("row");
       var leftclicky = $(this).data("col");
-      board.leftClickUpdate(leftclickx,leftclicky);
+      board.leftClickUpdate(leftclickx,leftclicky,Minewidth,Mineheight);
+      board.changeBoard(Minewidth, Mineheight);
+      
     }
     
     else if(e.which == 3) {
@@ -115,10 +195,13 @@ $(document).ready(function() {
       var rightclicky = $(this).data("col"); 
       alert(rightclickx);
       alert(rightclicky);
-      board.RighCtlickUpdate(leftclickx,leftclicky);
-    }
+      board.RighCtlickUpdate(leftclickx,leftclicky,Minewidth,Mineheight);
+    }  
   });
+    
+});    
+  
+
   
 
 
-});
