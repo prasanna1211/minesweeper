@@ -20,6 +20,13 @@
   font-size: 25px;
   font-weight: 10px;
 }
+.click-flag {
+  background-image: url("../images/flag.png");
+  background-size: 25px 25px;
+  background-repeat: no-repeat;
+  background-position-x: 12px;
+  background-position-y: 12px;
+}
 .click-bomb {
   background-image: url("../images/bomb.png");
   background-size: 25px 25px;

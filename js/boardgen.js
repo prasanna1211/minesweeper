@@ -1,5 +1,6 @@
 $(document).ready(function() {
-  var Minewidth = 10; Mineheight = 10, Bombcount = 10;
+  var gameover = 0;
+  var Minewidth = 10; Mineheight = 10, Bombcount = 25;
   var dx = [-1,-1,-1,0,0,1,1,1];
   var dy = [-1,0,1,-1,1,-1,0,1];
   var cell = function(rowno,colno) {
@@ -64,7 +65,7 @@ $(document).ready(function() {
 
       
     }
-    //console.log($(".field").html());
+    console.log($(".field").html());
 
     //$(".field").append('<div class = "cell closed" data-row='+0+' data-col='+0+'\n');   
     //console.log($(".field").html());
@@ -141,13 +142,20 @@ $(document).ready(function() {
       //if not bomb open it, expose all fields, change state, change html accordingly   
       if(this.Mine[r][c].bomb) {
         alert("Game Over. You have stepped on bomb");
+        gameover=1;
         this.gameOver(r,c,rsize,csize);
       } 
       else {
         this.exposeCells(r,c,rsize,csize);
-      }
-      
-    
+      }  
+  };
+  Mine.prototype.rightClickUpdate= function(r,c,rsize,csize){
+    if(this.Mine[r][c].rightclickstate==1) this.Mine[r][c].rightclickstate=0;
+    else this.Mine[r][c].rightclickstate=1;
+
+      //display all bombds and disable touching
+      //if not bomb open it, expose all fields, change state, change html accordingly   
+
   };
   Mine.prototype.changeBoard= function(r,c){
       //display all bombds and disable touching
@@ -159,7 +167,10 @@ $(document).ready(function() {
       for(var j=0; j<c; j++) {
         html += '<div class = "cell ';
         //console.log("debug "+this.Mine[i][j].neighbourCount);
-        if(this.Mine[i][j].leftclickstate==1)  html += 'click-'+this.Mine[i][j].neighbourCount+'" ';
+        //console.log("state: "+this.Mine[i][j].rightclickstate);
+        if(this.Mine[i][j].leftclickstate==0 && this.Mine[i][j].rightclickstate) html += 'closed click-flag" ';
+        else if(this.Mine[i][j].leftclickstate==1 && !this.Mine[i][j].bomb)  html += 'click-'+this.Mine[i][j].neighbourCount+'" ';
+        else if(this.Mine[i][j].bomb&&this.Mine[i][j].leftclickstate==1) html += 'click-bomb" ';
         else html +='closed" '
         html += 'data-row="'+i+'" data-col="'+j+'">';
         html += '</div>';
@@ -169,16 +180,38 @@ $(document).ready(function() {
       //console.log(html1);
       $(".field").append('</div'+html);
     }
-    console.log($(".field").html());
+    //console.log($(".field").html());
     //$(".field").append('<div class = "cell closed" data-row='+0+' data-col='+0+'\n');   
     //console.log($(".field").html()); 
     for(var i=0; i<9; i++) {
       var selector = ".click-"+i;
       $(selector).append(i);
     }
+    if(!gameover) {
+      $(".closed").mousedown(function(e) {
+      //alert("clicked");  
+        if(e.which == 1) {
+          //alert("1");
+          var leftclickx = $(this).data("row");
+          var leftclicky = $(this).data("col");
+          board.leftClickUpdate(leftclickx,leftclicky,Minewidth,Mineheight);
+          board.changeBoard(Minewidth, Mineheight);      
+        }
+        else if(e.which == 3) {
+          //alert("3");
+          var rightclickx = $(this).data("row");
+          var rightclicky = $(this).data("col"); 
+          //alert(rightclickx);
+          //alert(rightclicky);
+          board.rightClickUpdate(rightclickx,rightclicky,Minewidth,Mineheight);
+          board.changeBoard(Minewidth, Mineheight);
+        }  
+      }); 
+    }
   };
-   
-  $(".closed").on("click",function(e) {
+  
+  
+  $(".closed").mousedown(function(e) {
     //alert("clicked");  
     if(e.which == 1) {
       //alert("1");
@@ -193,11 +226,12 @@ $(document).ready(function() {
       //alert("3");
       var rightclickx = $(this).data("row");
       var rightclicky = $(this).data("col"); 
-      alert(rightclickx);
-      alert(rightclicky);
-      board.RighCtlickUpdate(leftclickx,leftclicky,Minewidth,Mineheight);
+      //alert(rightclickx);
+      //alert(rightclicky);
+      board.rightClickUpdate(rightclickx,rightclicky,Minewidth,Mineheight);
+      board.changeBoard(Minewidth, Mineheight);
     }  
-  });
+  }); 
     
 });    
   
