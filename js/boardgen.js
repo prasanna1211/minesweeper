@@ -1,6 +1,6 @@
 $(document).ready(function() {
-  var gameover = 0, move = 0;
-  var Minewidth = 10; Mineheight = 10, Bombcount = 25;
+  var gameover = 0, move = 0, reachedMaxFlag=0;
+  var Minewidth = 10; Mineheight = 10, Bombcount = 15;
   var dx = [-1,-1,-1,0,0,1,1,1];
   var dy = [-1,0,1,-1,1,-1,0,1];
   var cell = function(rowno,colno) {
@@ -16,10 +16,11 @@ $(document).ready(function() {
   var Mine = function (rowsize, colsize) {
     this.row = rowsize;
     this.col = colsize;
-    this.gameover=0;
+    this.flagsleft = 15;
     this.initializeMine();                                                       
   }
-  
+  $(".moves").html(0+" moves done.");
+  $(".flags").html(Bombcount+" flags left.");
   Mine.prototype.initializeMine = function(){
     this.Mine = new Array(this.row);
     for(var i=0; i<this.row; i++) {
@@ -100,8 +101,21 @@ $(document).ready(function() {
       }  
   };
   Mine.prototype.rightClickUpdate= function(r,c,rsize,csize){
-    if(this.Mine[r][c].rightclickstate==1) this.Mine[r][c].rightclickstate=0;
-    else this.Mine[r][c].rightclickstate=1;
+    if(this.flagsleft<=0 && !reachedMaxFlag) {
+      alert("No more flags left");
+      reachedMaxFlag=1;
+    }
+    else {
+      if(this.Mine[r][c].rightclickstate==1) {
+        this.Mine[r][c].rightclickstate=0;
+        this.flagsleft += 1;
+        reachedMaxFlag = 0;
+      }
+      else if(!reachedMaxFlag) {
+        this.Mine[r][c].rightclickstate=1;
+        this.flagsleft -= 1;
+      }
+    }
   };
 
   Mine.prototype.changeBoard= function(r,c){
@@ -125,14 +139,17 @@ $(document).ready(function() {
       $(selector).append(i);
     }
     move++;
-    $(".moves").html(move);
+    $(".moves").html(move+" moves done.");
+    $(".flags").html(this.flagsleft+" flags left");
     if(!gameover) {
       $(".closed").mousedown(function(e) {
         if(e.which == 1) {
           var leftclickx = $(this).data("row");
           var leftclicky = $(this).data("col");
-          board.leftClickUpdate(leftclickx,leftclicky,Minewidth,Mineheight);
-          board.changeBoard(Minewidth, Mineheight);      
+          if(!board.Mine[leftclickx][leftclicky].rightclickstate) {
+            board.leftClickUpdate(leftclickx,leftclicky,Minewidth,Mineheight);
+            board.changeBoard(Minewidth, Mineheight);      
+          }
         }
         else if(e.which == 3) {
           var rightclickx = $(this).data("row");
@@ -150,8 +167,10 @@ $(document).ready(function() {
     if(e.which == 1) {
       var leftclickx = $(this).data("row");
       var leftclicky = $(this).data("col");
-      board.leftClickUpdate(leftclickx,leftclicky,Minewidth,Mineheight);
-      board.changeBoard(Minewidth, Mineheight);
+      if(!board.Mine[leftclickx][leftclicky].rightclickstate) {
+        board.leftClickUpdate(leftclickx,leftclicky,Minewidth,Mineheight);
+        board.changeBoard(Minewidth, Mineheight);
+      }
       
     }
     else if(e.which == 3) {
