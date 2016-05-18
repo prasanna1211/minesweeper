@@ -1,0 +1,89 @@
+h1 {
+  margin-left: 30px;
+  text-decoration: underline;
+}
+.moves {
+  border: 1px solid black;
+  width: 240px;
+  height: 50px; 
+  line-height: -10px;  
+  text-align: center;
+  font-size: 30px;
+  font-style: italic;
+  margin-left: 250px;
+}
+.flags {
+  border: 1px solid black;
+  width: 240px;
+  height: 50px; 
+  line-height: -10px;  
+  text-align: center;
+  font-size: 30px;
+  float: left;
+  font-style: italic;
+  margin-left: 250px;
+}
+.field{
+  width: 502px;
+  height: 502px;
+  border: 1px solid black;
+  margin: 40px 100px;
+}
+.row {
+  border: 1px solid red;
+  width: 500px;
+  height: 50px;
+  margin-left: 0px;
+}
+.cell {
+  border: 1px solid black;
+  background-color: #eeeeee;
+  width: 50px;
+  height: 50px;
+  float: left;
+  text-align: center;
+  font-size: 25px;
+  font-weight: 10px;
+}
+.click-flag {
+  background-image: url("../images/flag.png");
+  background-size: 25px 25px;
+  background-repeat: no-repeat;
+  background-position-x: 12px;
+  background-position-y: 12px;
+}
+.click-bomb {
+  background-image: url("../images/bomb.png");
+  background-size: 25px 25px;
+  background-repeat: no-repeat;
+  background-position-x: 12px;
+  background-position-y: 12px;
+}
+.click-0 {
+  color: green;
+  background-color: #969495;
+}
+.click-1 {
+  color :blue;
+}
+.click-2 {
+  color :green;
+}
+.click-3 {
+  color :red;
+}
+.click-4 {
+  color :black;
+}
+.click-5 {
+  color :orange;
+}
+.click-6 {
+  color :yellow;
+}
+.click-7 {
+  color: black;
+}
+.click-8 {
+  color: black;
+}

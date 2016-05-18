@@ -38,7 +38,7 @@ $(document).ready(function() {
     for(var i=1; i<=bomb;i++) {
       var randomr = Math.floor(Math.random()*r);
       var randomc = Math.floor(Math.random()*c);
-      if(this.Mine[randomr][randomc].bomb != 0) {
+      if(this.Mine[randomr][randomc!=0]) {
         bomb++;
         continue;
       }
